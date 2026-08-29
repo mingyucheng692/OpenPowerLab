@@ -1,21 +1,12 @@
-import type { ApiResponse } from '../types/api'
+import { fetchJson, getFullUrl } from './client'
+import type { HealthResponse, PingResponse } from '../types/api'
 
-const backendBaseUrl = 'http://localhost:8080'
-
-export async function fetchHealth(): Promise<{ status: number; data: ApiResponse }> {
-  const res = await fetch(`${backendBaseUrl}/api/health`)
-  if (!res.ok) {
-    throw new Error(`HTTP error! status: ${res.status}`)
-  }
-  const data = await res.json()
-  return { status: res.status, data }
+export const healthApi = {
+  url: getFullUrl('/api/health'),
+  request: () => fetchJson<HealthResponse>('/api/health'),
 }
 
-export async function fetchPing(): Promise<{ status: number; data: ApiResponse }> {
-  const res = await fetch(`${backendBaseUrl}/api/ping`)
-  if (!res.ok) {
-    throw new Error(`HTTP error! status: ${res.status}`)
-  }
-  const data = await res.json()
-  return { status: res.status, data }
+export const pingApi = {
+  url: getFullUrl('/api/ping'),
+  request: () => fetchJson<PingResponse>('/api/ping'),
 }

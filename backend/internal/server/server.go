@@ -1,36 +1,58 @@
 package server
 
 import (
-	"fmt"
+	"context"
+	"errors"
+	"log/slog"
 	"net/http"
+	"time"
 
 	"openpowerlab/backend/internal/handler"
 	"openpowerlab/backend/internal/middleware"
 )
 
-// Server represents the HTTP server.
+// Server represents the HTTP server with graceful shutdown capability.
 type Server struct {
-	addr    string
-	handler http.Handler
+	httpServer *http.Server
 }
 
-// NewServer initializes routes, middleware, and returns a Server instance.
+// NewServer initializes routes, middleware chain, and returns a Server instance.
 func NewServer(addr string) *Server {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /api/health", handler.HealthHandler)
 	mux.HandleFunc("GET /api/ping", handler.PingHandler)
 
-	wrappedHandler := middleware.CORS(mux)
+	// Chain: Recovery -> CORS -> Mux
+	wrappedHandler := middleware.Recovery(middleware.CORS(mux))
 
 	return &Server{
-		addr:    addr,
-		handler: wrappedHandler,
+		httpServer: &http.Server{
+			Addr:              addr,
+			Handler:           wrappedHandler,
+			ReadHeaderTimeout: 5 * time.Second,
+			IdleTimeout:       60 * time.Second,
+		},
 	}
 }
 
-// Start runs the HTTP server.
-func (s *Server) Start() error {
-	fmt.Printf("Backend server listening on http://localhost%s\n", s.addr)
-	return http.ListenAndServe(s.addr, s.handler)
+// Run starts the HTTP server and blocks until the context is cancelled, then executes graceful shutdown.
+func (s *Server) Run(ctx context.Context) error {
+	serverErrCh := make(chan error, 1)
+	go func() {
+		slog.Info("backend server listening", "addr", s.httpServer.Addr)
+		if err := s.httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			serverErrCh <- err
+		}
+	}()
+
+	select {
+	case err := <-serverErrCh:
+		return err
+	case <-ctx.Done():
+		slog.Info("shutting down server gracefully...")
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		return s.httpServer.Shutdown(shutdownCtx)
+	}
 }

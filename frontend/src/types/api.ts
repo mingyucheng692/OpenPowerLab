@@ -1,14 +1,16 @@
-export interface ApiResponse {
-  status?: string
-  service?: string
-  message?: string
-  [key: string]: any
+export interface HealthResponse {
+  status: string
+  service: string
 }
 
-export interface EndpointState {
+export interface PingResponse {
+  message: string
+}
+
+export interface EndpointState<T = any> {
   url: string
   status: number | null
   loading: boolean
   error: string | null
-  data: ApiResponse | null
+  data: T | null
 }
