@@ -7,7 +7,7 @@ export interface PingResponse {
   message: string
 }
 
-export interface EndpointState<T = any> {
+export interface EndpointState<T = unknown> {
   url: string
   status: number | null
   loading: boolean

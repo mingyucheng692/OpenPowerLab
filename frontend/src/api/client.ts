@@ -1,11 +1,15 @@
-export const BASE_URL = 'http://localhost:8080'
-
-export function getFullUrl(path: string): string {
-  return `${BASE_URL}${path}`
+// All browser requests use relative paths (same-origin or via dev proxy).
+// Do not hardcode localhost / protocol / port here or anywhere else.
+export function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
+  return doFetch<T>(path, init)
 }
 
-export async function fetchJson<T>(path: string): Promise<T> {
-  const res = await fetch(getFullUrl(path))
+export function getFullUrl(path: string): string {
+  return path
+}
+
+async function doFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(path, init)
   if (!res.ok) {
     throw new Error(`HTTP ${res.status}: ${res.statusText}`)
   }

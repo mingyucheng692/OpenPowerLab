@@ -23,8 +23,8 @@ func NewServer(addr string) *Server {
 	mux.HandleFunc("GET /api/health", handler.HealthHandler)
 	mux.HandleFunc("GET /api/ping", handler.PingHandler)
 
-	// Chain: Recovery -> CORS -> Mux
-	wrappedHandler := middleware.Recovery(middleware.CORS(mux))
+	// Chain: Recovery -> LimitBody -> CORS -> Mux
+	wrappedHandler := middleware.Recovery(middleware.LimitBody(middleware.CORS(mux)))
 
 	return &Server{
 		httpServer: &http.Server{

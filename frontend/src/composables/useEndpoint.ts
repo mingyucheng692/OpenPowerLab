@@ -1,28 +1,28 @@
-import { ref, type Ref } from 'vue'
+import { reactive } from 'vue'
 import type { EndpointState } from '../types/api'
 
 export function useEndpoint<T>(url: string, fetchFn: () => Promise<T>) {
-  const state: Ref<EndpointState<T>> = ref({
+  const state = reactive({
     url,
     status: null,
     loading: false,
     error: null,
     data: null,
-  })
+  }) as EndpointState<T>
 
   async function execute() {
-    state.value.loading = true
-    state.value.error = null
+    state.loading = true
+    state.error = null
     try {
       const data = await fetchFn()
-      state.value.status = 200
-      state.value.data = data as any
-    } catch (err: any) {
-      state.value.status = null
-      state.value.error = err.message || '请求失败'
-      state.value.data = null
+      state.status = 200
+      state.data = data
+    } catch (err) {
+      state.status = null
+      state.error = err instanceof Error ? err.message : '请求失败'
+      state.data = null
     } finally {
-      state.value.loading = false
+      state.loading = false
     }
   }
 

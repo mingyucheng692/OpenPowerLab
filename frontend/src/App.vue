@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { BASE_URL } from './api/client'
 import { healthApi, pingApi } from './api/system'
 import { useEndpoint } from './composables/useEndpoint'
 import EndpointCard from './components/EndpointCard.vue'
@@ -19,7 +18,7 @@ onMounted(fetchAll)
 <template>
   <div class="container">
     <h1>前后端通信验证 (OpenPowerLab)</h1>
-    <p class="subtitle">前端: <code>http://localhost:5173</code> | 后端: <code>{{ BASE_URL }}</code></p>
+    <p class="subtitle">前端: <code>/</code>（同源 + 开发代理） | 后端 API: <code>/api/*</code></p>
 
     <div class="actions">
       <button @click="fetchAll">重新请求全部</button>
@@ -28,10 +27,10 @@ onMounted(fetchAll)
     </div>
 
     <!-- Health Section -->
-    <EndpointCard :endpoint="healthEndpoint.state.value" method="GET" />
+    <EndpointCard :endpoint="healthEndpoint.state" method="GET" />
 
     <!-- Ping Section -->
-    <EndpointCard :endpoint="pingEndpoint.state.value" method="GET" />
+    <EndpointCard :endpoint="pingEndpoint.state" method="GET" />
   </div>
 </template>
 
