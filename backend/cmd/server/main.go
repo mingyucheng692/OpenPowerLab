@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cmp"
 	"context"
 	"log/slog"
 	"os"
@@ -10,7 +11,7 @@ import (
 	"openpowerlab/backend/internal/server"
 )
 
-const defaultPort = ":8080"
+const defaultPort = "8080"
 
 func main() {
 	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
@@ -20,7 +21,8 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	srv := server.NewServer(defaultPort)
+	addr := ":" + cmp.Or(os.Getenv("PORT"), defaultPort)
+	srv := server.NewServer(addr)
 	if err := srv.Run(ctx); err != nil {
 		slog.Error("server error", "error", err)
 		os.Exit(1)
