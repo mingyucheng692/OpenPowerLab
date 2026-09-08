@@ -82,3 +82,11 @@ lerna-debug.log*
 ehthumbs.db
 Thumbs.db
 [Dd]esktop.ini
+
+# ==========================================
+# Local Agent Rules 
+# ==========================================
+.agents/
+AGENTS.md
+.codebuddy/
+.workbuddy/
