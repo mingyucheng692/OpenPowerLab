@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2026 mingyucheng692
+// SPDX-License-Identifier: Apache-2.0
+
+// Package server assembles routing and the middleware chain, and manages the
+// HTTP server lifecycle including graceful shutdown.
 package server
 
 import (

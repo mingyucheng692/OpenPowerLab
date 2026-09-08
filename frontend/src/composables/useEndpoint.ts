@@ -1,6 +1,17 @@
+// SPDX-FileCopyrightText: 2026 mingyucheng692
+// SPDX-License-Identifier: Apache-2.0
+
 import { reactive } from 'vue'
 import type { EndpointState } from '../types/api'
 
+/**
+ * Manages the request lifecycle of a single API endpoint.
+ *
+ * Returns a reactive {@link EndpointState} and an `execute` function that
+ * triggers the request: while running, `loading` is true and prior errors are
+ * cleared; on completion, either `data` holds the parsed response or `error`
+ * holds the failure message. `status` is 200 on success, null otherwise.
+ */
 export function useEndpoint<T>(url: string, fetchFn: () => Promise<T>) {
   const state = reactive({
     url,

@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2026 mingyucheng692
+// SPDX-License-Identifier: Apache-2.0
+
+// Package middleware provides cross-cutting HTTP concerns: panic recovery,
+// request body size limiting, and CORS handling.
 package middleware
 
 import "net/http"

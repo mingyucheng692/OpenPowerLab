@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 mingyucheng692
+// SPDX-License-Identifier: Apache-2.0
+
+// Package handler defines the JSON API endpoints of the OpenPowerLab backend.
 package handler
 
 import (

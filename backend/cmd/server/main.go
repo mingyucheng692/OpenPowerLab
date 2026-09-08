@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2026 mingyucheng692
+// SPDX-License-Identifier: Apache-2.0
+
+// Package main is the entry point of the OpenPowerLab backend. It wires up
+// logging, signal-based lifecycle management, and the HTTP server.
 package main
 
 import (

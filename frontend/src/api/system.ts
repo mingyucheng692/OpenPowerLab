@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 mingyucheng692
+// SPDX-License-Identifier: Apache-2.0
+
 import { fetchJson, getFullUrl } from './client'
 import type { HealthResponse, PingResponse } from '../types/api'
 
